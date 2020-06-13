@@ -1,10 +1,10 @@
 import boto3
-from datetime import datetime
 
 
 class ASGDirector():
     def __init__(self, logger=None):
-        self.client = boto3.client('autoscaling')
+        self.asg_client = boto3.client('autoscaling')
+        self.ec2_client = boto3.client('ec2')
         self.asgs = {
             'gmod': {
                 'ttt': 'gmod-ttt',
@@ -20,7 +20,7 @@ class ASGDirector():
         else:
             instance_count = 0
         try:
-            response = self.client.set_desired_capacity(
+            response = self.asg_client.set_desired_capacity(
                 AutoScalingGroupName=self.asgs[game][game_type],
                 DesiredCapacity=instance_count,
                 HonorCooldown=False
@@ -33,7 +33,7 @@ class ASGDirector():
     def status(self, game, game_type):
         try:
             ret = dict()
-            response = self.client.describe_auto_scaling_groups(
+            response = self.asg_client.describe_auto_scaling_groups(
                 AutoScalingGroupNames=[
                     self.asgs[game][game_type]
                 ]
@@ -42,16 +42,23 @@ class ASGDirector():
                 grp = response['AutoScalingGroups'][0]
                 cap = grp['DesiredCapacity']
                 ret['desiredCapacity'] = cap
-                print(response)
                 if cap == 1:
                     instance = grp['Instances'][0]
-                    inst = instance['LifecycleState']
-                    created = instance['CreatedTime'].strftime('%m-%d-%m %H:%M:%S')
+                    instanceId = instance['InstanceId']
+                    instanceResp = self.ec2_client.describe_instances(
+                        InstanceIds=[instanceId]
+                    )
+                    timeCreated = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime'].isoformat() + 'Z'
+                    instanceState = instance['LifecycleState']
+                    health = instance['HealthStatus']
                 else:
-                    inst = None
-                    created = None
-                ret['instanceLifecycle'] = inst
-                ret['createdTime'] = created
+                    instanceState = None
+                    health = None
+                    timeCreated = None
+
+                ret['health'] = health
+                ret['instanceLifecycle'] = instanceState
+                ret['createdTime'] = timeCreated
                 ret['success'] = True
                 ret['errorMsg'] = None
         except Exception as e:

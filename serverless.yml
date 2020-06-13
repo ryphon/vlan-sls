@@ -14,6 +14,9 @@ provider:
   - Effect: Allow
     Action: "autoscaling:DescribeAutoScalingGroups"
     Resource: "*"
+  - Effect: Allow
+    Action: "ec2:DescribeInstances"
+    Resource: "*"
 
 package:
   exclude:
