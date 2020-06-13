@@ -5,6 +5,7 @@ org: ryphon
 provider:
   name: aws
   runtime: python3.7
+  memorySize: 128
   stage: dev
   region: us-west-2
   iamRoleStatements:
@@ -26,6 +27,7 @@ package:
 functions:
   app:
     handler: wsgi_handler.handler
+    memorySize: 128
     events:
       - http: ANY /
         cors: true
@@ -41,7 +43,7 @@ custom:
     dockerizePip: non-linux
   customDomain:
     domainName: api.itisamystery.com
-    stage: dev
+    stage: prod
     certificateName: '*.itisamystery.com'
     createRoute53Record: true
     endpointType: 'regional'

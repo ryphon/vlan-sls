@@ -30,6 +30,14 @@ class ASGDirector():
             response = {}
         return response
 
+    def statusAll(self):
+        ret = dict()
+        for i in self.asgs:
+            ret[i] = dict()
+            for j in self.asgs[i]:
+                ret[i][j] = self.status(i, j)
+        return ret
+
     def status(self, game, game_type):
         try:
             ret = dict()
@@ -39,18 +47,23 @@ class ASGDirector():
                 ]
             )
             if 'AutoScalingGroups' in response:
-                grp = response['AutoScalingGroups'][0]
-                cap = grp['DesiredCapacity']
-                ret['desiredCapacity'] = cap
+                if isinstance(response['AutoScalingGroups'], list):
+                    grp = response['AutoScalingGroups'][0]
+                    cap = grp['DesiredCapacity']
+                    ret['desiredCapacity'] = cap
                 if cap == 1:
-                    instance = grp['Instances'][0]
-                    instanceId = instance['InstanceId']
-                    instanceResp = self.ec2_client.describe_instances(
-                        InstanceIds=[instanceId]
-                    )
-                    timeCreated = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime'].isoformat() + 'Z'
-                    instanceState = instance['LifecycleState']
-                    health = instance['HealthStatus']
+                    if isinstance(grp['Instances'], list):
+                        instance = grp['Instances'][0]
+                        health = instance['HealthStatus']
+                        instanceId = instance['InstanceId']
+                        instanceState = instance['LifecycleState']
+                        instanceResp = self.ec2_client.describe_instances(
+                            InstanceIds=[instanceId]
+                        )
+                    try:
+                        timeCreated = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime'].isoformat() + 'Z'
+                    except Exception:
+                        timeCreated = None
                 else:
                     instanceState = None
                     health = None

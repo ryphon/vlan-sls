@@ -45,12 +45,25 @@ def gameStartup():
     except Exception as e:
         ret['success'] = False
         ret['errorMsg'] = e
+    return ret, status
 
+
+@app.route('/statusAll', methods=['GET'])
+def allStatus():
+    try:
+        asg = ASGDirector()
+        ret = asg.statusAll()
+        status = 200
+    except Exception as e:
+        ret['success'] = False
+        ret['errorMsg'] = e
+        status = 500
     return ret, status
 
 
 @app.route('/status/<game>/<game_type>', methods=['GET'])
 def gameStatus(game, game_type):
+    ret = dict()
     try:
         asg = ASGDirector()
         ret = asg.status(game, game_type)
