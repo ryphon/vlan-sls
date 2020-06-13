@@ -9,8 +9,11 @@ provider:
   region: us-west-2
   iamRoleStatements:
   - Effect: Allow
-    Action: "autoscaling:SetDesiredCapacity"
+    Action: ["autoscaling:SetDesiredCapacity", "autoscaling:DescribeAutoScalingGroups"]
     Resource: ["arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:0c327aee-2787-4641-ba74-82c23e6dee74:autoScalingGroupName/gmod-ttt", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:fed68226-be0d-493d-b5e1-13ff9211c116:autoScalingGroupName/gmod-hdn"]
+  - Effect: Allow
+    Action: "autoscaling:DescribeAutoScalingGroups"
+    Resource: "*"
 
 package:
   exclude:

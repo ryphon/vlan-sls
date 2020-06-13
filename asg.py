@@ -1,4 +1,5 @@
 import boto3
+from datetime import datetime
 
 
 class ASGDirector():
@@ -41,9 +42,11 @@ class ASGDirector():
                 grp = response['AutoScalingGroups'][0]
                 cap = grp['DesiredCapacity']
                 ret['desiredCapacity'] = cap
+                print(response)
                 if cap == 1:
-                    inst = grp['Instances'][0]['LifecycleState']
-                    created = grp['Instances'][0]['CreatedTime']
+                    instance = grp['Instances'][0]
+                    inst = instance['LifecycleState']
+                    created = instance['CreatedTime'].strftime('%m-%d-%m %H:%M:%S')
                 else:
                     inst = None
                     created = None
@@ -52,7 +55,6 @@ class ASGDirector():
                 ret['success'] = True
                 ret['errorMsg'] = None
         except Exception as e:
-            print(e)
             ret = {
                 'success': False,
                 'errorMsg': e

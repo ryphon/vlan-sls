@@ -14,25 +14,48 @@ def yay():
 
 @app.route('/game', methods=['POST'])
 def gameStartup():
-    data = request.get_json()
-    if 'password' in data:
-        if data['password'] == 'gnuISnotUNIX':
+    try:
+        data = request.get_json()
+        if 'password' in data:
+            if data['password'] != 'gnuISnotUNIX':
+                return 'fuck you', 401
+        else:
             return 'fuck you', 401
-    else:
-        return 'fuck you', 401
-    if 'game' in data:
-        game = data['game']
-    if 'gameType' in data:
-        game_type = data['gameType']
-    if 'action' in data:
-        action = data['action']
-    asg = ASGDirector()
-    resp = asg.scale(game, game_type, action)
-    return resp, 200
+        if 'game' in data:
+            game = data['game']
+        if 'gameType' in data:
+            game_type = data['gameType']
+        if 'action' in data:
+            action = data['action']
+        asg = ASGDirector()
+        resp = asg.scale(game, game_type, action)
+        status = resp['ResponseMetadata']['HTTPStatusCode']
+        if status == 200:
+            ret = {
+                'success': True,
+                'errorMsg': None
+            }
+        else:
+            ret = {
+                'success': False,
+                'errorMsg': 'Bad AWS Status Code'
+            }
+    except Exception as e:
+        ret['success'] = False
+        ret['errorMsg'] = e
+
+    return ret, status
 
 
 @app.route('/status/<game>/<game_type>', methods=['GET'])
 def gameStatus(game, game_type):
-    asg = ASGDirector()
-    resp = asg.status(game, game_type)
-    return resp, 200
+    try:
+        asg = ASGDirector()
+        ret = asg.status(game, game_type)
+        status = 200
+        return ret, status
+    except Exception as e:
+        ret['success'] = False
+        ret['errorMsg'] = e
+        status = 500
+        return ret, status
