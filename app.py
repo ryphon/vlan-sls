@@ -3,13 +3,15 @@
 # coding: utf-8
 from asg import ASGDirector
 from flask import Flask, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/')
 def yay():
-    return 'yay!', 200
+    return {'yay?': 'yay!'}, 200
 
 
 @app.route('/game', methods=['POST'])
