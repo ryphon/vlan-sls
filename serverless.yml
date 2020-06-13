@@ -5,6 +5,13 @@ org: ryphon
 provider:
   name: aws
   runtime: python3.7
+  stage: dev
+  region: us-west-2
+
+package:
+  exclude:
+    - node_modules/**
+    - .git/**
 
 functions:
   app:
