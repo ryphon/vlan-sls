@@ -36,9 +36,3 @@ def gameStatus(game, game_type):
     asg = ASGDirector()
     resp = asg.status(game, game_type)
     return resp, 200
-
-
-@app.route('/aaron/<mood>')
-def aaron(mood):
-    string = 'an {} aaron is watching me right now!'.format(mood)
-    return string, 200
