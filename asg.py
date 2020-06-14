@@ -61,7 +61,12 @@ class ASGDirector():
                             InstanceIds=[instanceId]
                         )
                     try:
-                        timeCreated = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime'].isoformat() + 'Z'
+                        # timeCreated = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime'].isoformat() + 'Z'
+                        timeBeta = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime']
+                        # "2020-06-14T00:40:03.042Z"
+                        timeCreated = timeBeta.strftime('%Y-%m-%dT%H:%M:%SZ')
+                        print(timeCreated)
+                        print(timeBeta)
                     except Exception:
                         timeCreated = None
                 else:
