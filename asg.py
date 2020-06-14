@@ -12,6 +12,14 @@ class ASGDirector():
             }
         }
 
+    def getGames(self):
+        ret = dict()
+        for i in self.asgs:
+            ret[i] = list()
+            for j in self.asgs[i]:
+                ret[i].append(j)
+        return ret
+
     def scale(self, game, game_type, action):
         if action == 'stop':
             instance_count = 0
@@ -61,12 +69,9 @@ class ASGDirector():
                             InstanceIds=[instanceId]
                         )
                     try:
-                        # timeCreated = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime'].isoformat() + 'Z'
                         timeBeta = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime']
                         # "2020-06-14T00:40:03.042Z"
                         timeCreated = timeBeta.strftime('%Y-%m-%dT%H:%M:%SZ')
-                        print(timeCreated)
-                        print(timeBeta)
                     except Exception:
                         timeCreated = None
                 else:

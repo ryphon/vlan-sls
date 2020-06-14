@@ -48,6 +48,19 @@ def gameStartup():
     return ret, status
 
 
+@app.route('/allGames', methods=['GET'])
+def allGames():
+    try:
+        asg = ASGDirector()
+        ret = asg.getGames()
+        status = 200
+    except Exception as e:
+        ret['success'] = False
+        ret['errorMsg'] = e
+        status = 500
+    return ret, status
+
+
 @app.route('/statusAll', methods=['GET'])
 def allStatus():
     try:
