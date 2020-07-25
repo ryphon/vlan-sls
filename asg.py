@@ -9,6 +9,12 @@ class ASGDirector():
             'gmod': {
                 'ttt': 'gmod-ttt',
                 'hdn': 'gmod-hdn'
+            },
+            'soldat': {
+                'dm': 'soldat-dm',
+                'ctf': 'soldat-ctf',
+                'rambo': 'soldat-rambo',
+                'oddball': 'soldat-htf'
             }
         }
 
