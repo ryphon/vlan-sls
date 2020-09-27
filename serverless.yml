@@ -6,12 +6,12 @@ provider:
   name: aws
   runtime: python3.7
   memorySize: 128
-  stage: dev
+  stage: prod
   region: us-west-2
   iamRoleStatements:
   - Effect: Allow
     Action: ["autoscaling:SetDesiredCapacity", "autoscaling:DescribeAutoScalingGroups"]
-    Resource: ["arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:0c327aee-2787-4641-ba74-82c23e6dee74:autoScalingGroupName/gmod-ttt", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:fed68226-be0d-493d-b5e1-13ff9211c116:autoScalingGroupName/gmod-hdn"]
+    Resource: ["arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:0c327aee-2787-4641-ba74-82c23e6dee74:autoScalingGroupName/gmod-ttt", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:fed68226-be0d-493d-b5e1-13ff9211c116:autoScalingGroupName/gmod-hdn", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:7dcb3905-9157-477a-aae2-c8e7fd510b88:autoScalingGroupName/soldat-oddball", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:85969a7f-dd84-4bc4-879a-6fc2f1f8e5fc:autoScalingGroupName/soldat-dm", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:459e6e72-2a96-41bf-b22d-46d8848980b2:autoScalingGroupName/soldat-rambo", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:f26f7928-52c5-4246-a50e-e8ce6a0c5d5f:autoScalingGroupName/soldat-ctf", "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:b50f255a-27b3-48c0-b5e7-1db6b5f4929c:autoScalingGroupName/gmod-dr"]
   - Effect: Allow
     Action: "autoscaling:DescribeAutoScalingGroups"
     Resource: "*"

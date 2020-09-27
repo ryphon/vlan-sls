@@ -8,13 +8,14 @@ class ASGDirector():
         self.asgs = {
             'gmod': {
                 'ttt': 'gmod-ttt',
-                'hdn': 'gmod-hdn'
+                'hdn': 'gmod-hdn',
+                'dr': 'gmod-dr'
             },
             'soldat': {
                 'dm': 'soldat-dm',
                 'ctf': 'soldat-ctf',
                 'rambo': 'soldat-rambo',
-                'oddball': 'soldat-htf'
+                'oddball': 'soldat-oddball'
             }
         }
 
