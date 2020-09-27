@@ -1,23 +1,13 @@
 import boto3
+import json
 
 
 class ASGDirector():
     def __init__(self, logger=None):
         self.asg_client = boto3.client('autoscaling')
         self.ec2_client = boto3.client('ec2')
-        self.asgs = {
-            'gmod': {
-                'ttt': 'gmod-ttt',
-                'hdn': 'gmod-hdn',
-                'dr': 'gmod-dr'
-            },
-            'soldat': {
-                'dm': 'soldat-dm',
-                'ctf': 'soldat-ctf',
-                'rambo': 'soldat-rambo',
-                'oddball': 'soldat-oddball'
-            }
-        }
+        self.ssm = boto3.client('ssm')
+        self.asgs = json.loads(self.ssm.get_parameter(Name='asg_names')['Parameter']['Value'].replace("'", "\""))
 
     def getGames(self):
         ret = dict()
