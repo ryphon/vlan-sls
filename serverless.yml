@@ -33,9 +33,7 @@ functions:
     memorySize: 128
     events:
       - http: ANY /
-        cors: true
       - http: 'ANY {proxy+}'
-        cors: true
 
 custom:
   wsgi:
