@@ -19,7 +19,7 @@ provider:
     Action: "ec2:DescribeInstances"
     Resource: "*"
   - Effect: Allow
-    Action: "ssm:GetParameterStore"
+    Action: "ssm:GetParameter"
     Resource: "*"
 
 package:
