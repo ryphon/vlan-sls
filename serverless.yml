@@ -8,27 +8,29 @@ provider:
   memorySize: 128
   stage: prod
   region: us-west-2
-  iamRoleStatements:
-  - Effect: Allow
-    Action: ["autoscaling:SetDesiredCapacity", "autoscaling:DescribeAutoScalingGroups"]
-    Resource: [
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:d19c76dd-17a8-4298-8650-24149b1d454d:autoScalingGroupName/gmod-ttt",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:085798fe-cb7b-4eaf-a409-841d5794e9df:autoScalingGroupName/gmod-thehidden",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:53b306f5-767f-4c48-91c8-1976e13a1ec7:autoScalingGroupName/gmod-deathrun",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:7dcb3905-9157-477a-aae2-c8e7fd510b88:autoScalingGroupName/soldat-oddball",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:5bc79329-82d3-4226-8a2b-6e881f5d41ec:autoScalingGroupName/soldat-deathmatch",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:459e6e72-2a96-41bf-b22d-46d8848980b2:autoScalingGroupName/soldat-rambo",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:f26f7928-52c5-4246-a50e-e8ce6a0c5d5f:autoScalingGroupName/soldat-ctf"
-    ]
-  - Effect: Allow
-    Action: "autoscaling:DescribeAutoScalingGroups"
-    Resource: "*"
-  - Effect: Allow
-    Action: "ec2:DescribeInstances"
-    Resource: "*"
-  - Effect: Allow
-    Action: "ssm:GetParameter"
-    Resource: "*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: ["autoscaling:SetDesiredCapacity", "autoscaling:DescribeAutoScalingGroups"]
+          Resource: [
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:d19c76dd-17a8-4298-8650-24149b1d454d:autoScalingGroupName/gmod-ttt",
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:085798fe-cb7b-4eaf-a409-841d5794e9df:autoScalingGroupName/gmod-thehidden",
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:53b306f5-767f-4c48-91c8-1976e13a1ec7:autoScalingGroupName/gmod-deathrun",
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:7dcb3905-9157-477a-aae2-c8e7fd510b88:autoScalingGroupName/soldat-oddball",
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:5bc79329-82d3-4226-8a2b-6e881f5d41ec:autoScalingGroupName/soldat-deathmatch",
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:459e6e72-2a96-41bf-b22d-46d8848980b2:autoScalingGroupName/soldat-rambo",
+            "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:f26f7928-52c5-4246-a50e-e8ce6a0c5d5f:autoScalingGroupName/soldat-ctf"
+          ]
+        - Effect: Allow
+          Action: "autoscaling:DescribeAutoScalingGroups"
+          Resource: "*"
+        - Effect: Allow
+          Action: "ec2:DescribeInstances"
+          Resource: "*"
+        - Effect: Allow
+          Action: "ssm:GetParameter"
+          Resource: "*"
 
 package:
   exclude:
