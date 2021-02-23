@@ -14,7 +14,7 @@ provider:
     Resource: [
       "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:d19c76dd-17a8-4298-8650-24149b1d454d:autoScalingGroupName/gmod-ttt",
       "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:085798fe-cb7b-4eaf-a409-841d5794e9df:autoScalingGroupName/gmod-thehidden",
-      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:b50f255a-27b3-48c0-b5e7-1db6b5f4929c:autoScalingGroupName/gmod-dr",
+      "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:53b306f5-767f-4c48-91c8-1976e13a1ec7:autoScalingGroupName/gmod-deathrun",
       "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:7dcb3905-9157-477a-aae2-c8e7fd510b88:autoScalingGroupName/soldat-oddball",
       "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:85969a7f-dd84-4bc4-879a-6fc2f1f8e5fc:autoScalingGroupName/soldat-dm",
       "arn:aws:autoscaling:us-west-2:456410706824:autoScalingGroup:459e6e72-2a96-41bf-b22d-46d8848980b2:autoScalingGroupName/soldat-rambo",
