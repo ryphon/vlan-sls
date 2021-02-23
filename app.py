@@ -63,6 +63,7 @@ def allGames():
 
 @app.route('/statusAll', methods=['GET'])
 def allStatus():
+    ret = dict()
     try:
         asg = ASGDirector()
         ret = asg.statusAll()
