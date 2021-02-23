@@ -20,9 +20,9 @@ def gameStartup():
         data = request.get_json()
         if 'password' in data:
             if data['password'] != 'gnuISnotUNIX':
-                return 'fuck you', 401
+                return 'denied', 401
         else:
-            return 'fuck you', 401
+            return 'denied', 401
         if 'game' in data:
             game = data['game']
         if 'gameType' in data:
