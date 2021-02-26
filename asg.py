@@ -4,8 +4,8 @@ import json
 
 class ASGDirector():
     def __init__(self, logger=None):
-        self.asg_client = boto3.client('autoscaling')
-        self.ec2_client = boto3.client('ec2')
+        self.asg = boto3.client('autoscaling')
+        self.ec2 = boto3.client('ec2')
         self.ssm = boto3.client('ssm')
         self.asgs = json.loads(self.ssm.get_parameter(Name='asg_names')['Parameter']['Value'].replace("'", "\""))
 
@@ -25,7 +25,7 @@ class ASGDirector():
         else:
             instance_count = 0
         try:
-            response = self.asg_client.set_desired_capacity(
+            response = self.asg.set_desired_capacity(
                 AutoScalingGroupName=self.asgs[game][game_type],
                 DesiredCapacity=instance_count,
                 HonorCooldown=False
@@ -46,7 +46,7 @@ class ASGDirector():
     def status(self, game, game_type):
         try:
             ret = dict()
-            response = self.asg_client.describe_auto_scaling_groups(
+            response = self.asg.describe_auto_scaling_groups(
                 AutoScalingGroupNames=[
                     self.asgs[game][game_type]
                 ]
@@ -62,24 +62,29 @@ class ASGDirector():
                         health = instance['HealthStatus']
                         instanceId = instance['InstanceId']
                         instanceState = instance['LifecycleState']
-                        instanceResp = self.ec2_client.describe_instances(
+                        instanceResp = self.ec2.describe_instances(
                             InstanceIds=[instanceId]
                         )
                     try:
-                        timeBeta = instanceResp['Reservations'][0]['Instances'][0]['LaunchTime']
+                        instanceData = instanceResp['Reservations'][0]['Instances'][0]
+                        timeBeta = instanceData['LaunchTime']
                         # "2020-06-14T00:40:03.042Z"
                         timeCreated = timeBeta.strftime('%Y-%m-%dT%H:%M:%SZ')
+                        ipAddress = instanceData['NetworkInterfaces'][0]['Association']['PublicIp']
                     except Exception:
                         timeCreated = None
+                        ipAddress = None
                 else:
                     instanceState = None
                     health = None
                     timeCreated = None
+                    ipAddress = None
 
                 ret['health'] = health
                 ret['instanceLifecycle'] = instanceState
                 ret['createdTime'] = timeCreated
                 ret['success'] = True
+                ret['ipAddress'] = ipAddress
                 ret['errorMsg'] = None
         except Exception as e:
             ret = {
