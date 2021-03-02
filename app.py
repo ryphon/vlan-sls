@@ -16,35 +16,48 @@ def yay():
 
 @app.route('/game', methods=['POST'])
 def gameStartup():
+    ret = {
+        'success': False,
+        'errorMsg': 'Unknown'
+    }
     try:
+        asg = ASGDirector()
+        print(request.headers.get('Authentication'))
+        try:
+            # decoded_token = auth.verify_id_token(id_token)
+            pass
+        except Exception:
+            ret['success'] = False
+            # ret['errorMsg'] = 'Exception! {}\nToken: {}'.format(e, decoded_token)
+            return ret, 403
         data = request.get_json()
         if 'password' in data:
             if data['password'] != 'gnuISnotUNIX':
-                return 'denied', 401
+                ret['success'] = False
+                ret['errorMsg'] = 'Access Denied'
+                return ret, 401
         else:
-            return 'denied', 401
+            ret['success'] = False
+            ret['errorMsg'] = 'Access Denied'
+            return ret, 401
         if 'game' in data:
             game = data['game']
         if 'gameType' in data:
             game_type = data['gameType']
         if 'action' in data:
             action = data['action']
-        asg = ASGDirector()
         resp = asg.scale(game, game_type, action)
         status = resp['ResponseMetadata']['HTTPStatusCode']
         if status == 200:
-            ret = {
-                'success': True,
-                'errorMsg': None
-            }
+            ret['success'] = True
+            ret['errorMsg'] = None
         else:
-            ret = {
-                'success': False,
-                'errorMsg': 'Bad AWS Status Code'
-            }
+            ret['success'] = False
+            ret['errorMsg'] = 'AWS Problems'
     except Exception as e:
         ret['success'] = False
-        ret['errorMsg'] = e
+        ret['errorMsg'] = 'Exception: {}'.format(e)
+        return ret, 400
     return ret, status
 
 

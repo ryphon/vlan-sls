@@ -4,8 +4,8 @@ org: ryphon
 
 provider:
   name: aws
-  runtime: python3.7
-  memorySize: 128
+  runtime: python3.8
+  memorySize: 256
   stage: prod
   region: us-west-2
   iam:

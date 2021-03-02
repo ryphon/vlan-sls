@@ -1,4 +1,6 @@
 import boto3
+import firebase_admin
+from firebase_admin import credentials, firestore, auth
 import json
 
 
@@ -8,6 +10,15 @@ class ASGDirector():
         self.ec2 = boto3.client('ec2')
         self.ssm = boto3.client('ssm')
         self.asgs = json.loads(self.ssm.get_parameter(Name='asg_names')['Parameter']['Value'].replace("'", "\""))
+        ssm = boto3.client('ssm')
+        cert = json.loads(ssm.get_parameter(Name='firebase_secrets', WithDecryption=True)['Parameter']['Value'])
+
+        self.firebase_creds = credentials.Certificate(cert)
+        if not firebase_admin._apps:
+            self.firebase_app = firebase_admin.initialize_app(self.firebase_creds)
+        else:
+            self.firebase_app = firebase_admin.get_app()
+        self.firestore = firestore.client(self.firebase_app)
 
     def getGames(self):
         ret = dict()
@@ -20,8 +31,20 @@ class ASGDirector():
     def scale(self, game, game_type, action):
         if action == 'stop':
             instance_count = 0
+            self.firestore.document(f'games/{game}').set({
+                f'{game_type}': {
+                    "started": False,
+                    "ready": False
+                }
+            })
         elif action == 'start':
             instance_count = 1
+            self.firestore.document(f'games/{game}').set({
+                f'{game_type}': {
+                    "started": True,
+                    "ready": False
+                }
+            })
         else:
             instance_count = 0
         try:
