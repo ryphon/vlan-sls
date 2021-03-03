@@ -1,6 +1,6 @@
 import boto3
 import firebase_admin
-from firebase_admin import credentials, firestore, auth
+from firebase_admin import credentials, firestore
 import json
 
 
@@ -13,6 +13,7 @@ class ASGDirector():
         ssm = boto3.client('ssm')
         cert = json.loads(ssm.get_parameter(Name='firebase_secrets', WithDecryption=True)['Parameter']['Value'])
 
+        print("Setting up Firebase App")
         self.firebase_creds = credentials.Certificate(cert)
         if not firebase_admin._apps:
             self.firebase_app = firebase_admin.initialize_app(self.firebase_creds)
@@ -29,19 +30,21 @@ class ASGDirector():
         return ret
 
     def scale(self, game, game_type, action):
+        print("Request to {} game {} and type {}".format(action, game, game_type))
         if action == 'stop':
             instance_count = 0
             self.firestore.document(f'games/{game}').set({
                 f'{game_type}': {
                     "started": False,
-                    "ready": False
+                    "ready": False,
+                    "ipAddress": None
                 }
             }, merge=True)
         elif action == 'start':
             instance_count = 1
             self.firestore.document(f'games/{game}').set({
                 f'{game_type}': {
-                    "started": False,
+                    "started": True,
                     "ready": False
                 }
             }, merge=True)
@@ -53,6 +56,7 @@ class ASGDirector():
                 DesiredCapacity=instance_count,
                 HonorCooldown=False
             )
+            print("Scaled!")
         except Exception as e:
             print(e)
             response = {}
