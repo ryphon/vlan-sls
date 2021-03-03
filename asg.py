@@ -36,15 +36,15 @@ class ASGDirector():
                     "started": False,
                     "ready": False
                 }
-            })
+            }, merge=True)
         elif action == 'start':
             instance_count = 1
             self.firestore.document(f'games/{game}').set({
                 f'{game_type}': {
-                    "started": True,
+                    "started": False,
                     "ready": False
                 }
-            })
+            }, merge=True)
         else:
             instance_count = 0
         try:

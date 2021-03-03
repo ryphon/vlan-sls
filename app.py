@@ -2,6 +2,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 # coding: utf-8
 from asg import ASGDirector
+from firebase_admin import auth
 from flask import Flask, request
 from flask_cors import CORS
 
@@ -22,14 +23,11 @@ def gameStartup():
     }
     try:
         asg = ASGDirector()
-        print(request.headers.get('Authentication'))
-        try:
-            # decoded_token = auth.verify_id_token(id_token)
-            pass
-        except Exception:
-            ret['success'] = False
-            # ret['errorMsg'] = 'Exception! {}\nToken: {}'.format(e, decoded_token)
-            return ret, 403
+        if 'Authorization' in request.headers:
+            token = request.headers.get('Authorization').split(' ')[1]
+            auth.verify_id_token(token)
+        else:
+            return "Unauthorized", 401
         data = request.get_json()
         if 'password' in data:
             if data['password'] != 'gnuISnotUNIX':
@@ -79,11 +77,16 @@ def allStatus():
     ret = dict()
     try:
         asg = ASGDirector()
+        if 'Authorization' in request.headers:
+            token = request.headers.get('Authorization').split(' ')[1]
+            auth.verify_id_token(token)
+        else:
+            return "Unauthorized", 401
         ret = asg.statusAll()
         status = 200
     except Exception as e:
         ret['success'] = False
-        ret['errorMsg'] = e
+        ret['errorMsg'] = "Exception! {}".format(e)
         status = 500
     return ret, status
 
