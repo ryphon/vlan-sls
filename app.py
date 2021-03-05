@@ -29,15 +29,6 @@ def gameStartup():
         else:
             return "Unauthorized", 401
         data = request.get_json()
-        if 'password' in data:
-            if data['password'] != 'gnuISnotUNIX':
-                ret['success'] = False
-                ret['errorMsg'] = 'Access Denied'
-                return ret, 401
-        else:
-            ret['success'] = False
-            ret['errorMsg'] = 'Access Denied'
-            return ret, 401
         if 'game' in data:
             game = data['game']
         if 'gameType' in data:
