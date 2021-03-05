@@ -1,4 +1,5 @@
 import boto3
+import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 import json
@@ -10,16 +11,32 @@ class ASGDirector():
         self.ec2 = boto3.client('ec2')
         self.ssm = boto3.client('ssm')
         self.asgs = json.loads(self.ssm.get_parameter(Name='asg_names')['Parameter']['Value'].replace("'", "\""))
-        ssm = boto3.client('ssm')
-        cert = json.loads(ssm.get_parameter(Name='firebase_secrets', WithDecryption=True)['Parameter']['Value'])
 
-        print("Setting up Firebase App")
-        self.firebase_creds = credentials.Certificate(cert)
+        region = os.environ.get('AWS_REGION', 'us-west-2')
+        ssm = boto3.client('ssm', region_name=region)
+        cert = json.loads(ssm.get_parameter(Name='firebase_secrets', WithDecryption=True)['Parameter']['Value'])
+        firebase_creds = credentials.Certificate(cert)
         if not firebase_admin._apps:
-            self.firebase_app = firebase_admin.initialize_app(self.firebase_creds)
+            self.firebase_app = firebase_admin.initialize_app(firebase_creds)
         else:
             self.firebase_app = firebase_admin.get_app()
-        self.firestore = firestore.client(self.firebase_app)
+        self.store = firestore.client(self.firebase_app)
+
+    def documentStore(self, game, gameType, state):
+        if state == 'start':
+            self.store.document(f'games/{game}').set({
+                f'{gameType}': {
+                    'started': True,
+                    'ready': False,
+                }
+            }, merge=True)
+        elif state == 'stop':
+            self.store.document(f'games/{game}').set({
+                f'{gameType}': {
+                    'started': False,
+                    'ready': False,
+                }
+            }, merge=True)
 
     def getGames(self):
         ret = dict()
@@ -33,21 +50,8 @@ class ASGDirector():
         print("Request to {} game {} and type {}".format(action, game, game_type))
         if action == 'stop':
             instance_count = 0
-            self.firestore.document(f'games/{game}').set({
-                f'{game_type}': {
-                    "started": False,
-                    "ready": False,
-                    "ipAddress": None
-                }
-            }, merge=True)
         elif action == 'start':
             instance_count = 1
-            self.firestore.document(f'games/{game}').set({
-                f'{game_type}': {
-                    "started": True,
-                    "ready": False
-                }
-            }, merge=True)
         else:
             instance_count = 0
         try:
@@ -56,6 +60,7 @@ class ASGDirector():
                 DesiredCapacity=instance_count,
                 HonorCooldown=False
             )
+            self.documentStore(game, game_type, action)
             print("Scaled!")
         except Exception as e:
             print(e)

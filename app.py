@@ -46,6 +46,7 @@ def gameStartup():
     except Exception as e:
         ret['success'] = False
         ret['errorMsg'] = 'Exception: {}'.format(e)
+        print(ret)
         return ret, 400
     return ret, status
 
@@ -60,6 +61,7 @@ def allGames():
         ret['success'] = False
         ret['errorMsg'] = e
         status = 500
+    print(ret)
     return ret, status
 
 # @app.route('/status/<game>/<game_type>', methods=['GET'])
