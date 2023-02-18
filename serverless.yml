@@ -38,7 +38,7 @@ custom:
     stage: prod
     certificateName: '*.itisamystery.com'
     createRoute53Record: true
-    endpointType: 'regional'
+    #endpointType: 'regional'
     securityPolicy: tls_1_2
     apiType: rest
 
